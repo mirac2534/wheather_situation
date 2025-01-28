@@ -1,8 +1,8 @@
-import 'dart:convert'; // JSON dosyasını okumak için
+import 'dart:convert'; // to read JSON file
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; // rootBundle erişimi için
+import 'package:flutter/services.dart'; // to access rootBundle
 import 'package:shared_preferences/shared_preferences.dart'; // SharedPreferences
-import 'package:hava_durumu/models/city_images.dart'; // Şehir resimlerini içeren harita
+import 'package:hava_durumu/models/city_images.dart';
 
 class CityDetailPage extends StatefulWidget {
   final String city;
@@ -16,21 +16,21 @@ class CityDetailPage extends StatefulWidget {
 class _CityDetailPageState extends State<CityDetailPage> {
   late List<String> allCities = [];
   List<String> cityHistory =
-      []; // Şehir geçmişi (SharedPreferences'tan yüklenecek)
-  List<String> filteredCities = []; // Arama sonuçları
+      []; // City history (to be uploaded from SharedPreferences)
+  List<String> filteredCities = []; // Search results Dec
   final TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
 
-    // SharedPreferences'tan geçmişi oku
+    // Read the history from SharedPreferences
     _loadCityHistory();
 
-    // JSON'dan şehir listesini oku
+    // Read the city list from JSON
     _loadCities();
 
-    // Arama metni değiştikçe filtrelemeyi yenile
+    // Refresh Decryption as the search text changes
     searchController.addListener(() {
       setState(() {
         if (searchController.text.isNotEmpty) {
@@ -54,7 +54,7 @@ class _CityDetailPageState extends State<CityDetailPage> {
 
       setState(() {
         allCities = List<String>.from(cities);
-        allCities.remove(widget.city); // Mevcut şehri çıkar
+        allCities.remove(widget.city); // Remove the current city
         filteredCities = [];
       });
     } catch (e) {
@@ -77,24 +77,24 @@ class _CityDetailPageState extends State<CityDetailPage> {
   void _onCitySelected(String cityName) async {
     setState(() {
       if (!cityHistory.contains(cityName)) {
-        // Şehir geçmişine yeni şehir ekle
+        // Add a new city to the city history
         cityHistory.insert(0, cityName);
       } else {
-        // Mevcut şehir geçmişte varsa, önce çıkar, sonra en üste taşı
+        // If the current city existed in the past, first take it out, then move it to the top
         cityHistory.remove(cityName);
         cityHistory.insert(0, cityName);
       }
 
-      // Eğer geçmişte 10'dan fazla şehir varsa, en eski şehri (sondaki) sil
+      // If there are more than 8 cities in the past, delete the oldest city (at the end)
       if (cityHistory.length > 8) {
         cityHistory.removeLast();
       }
     });
 
-    // Güncellenen geçmişi SharedPreferences'a kaydet
+    // Save updated history to SharedPreferences
     await _saveCityHistory();
 
-    // Seçilen şehri geri döndür
+    // Return the selected city
     Navigator.pop(context, cityName);
   }
 
@@ -106,7 +106,8 @@ class _CityDetailPageState extends State<CityDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    final String? cityImage = cityImages[widget.city]; // Şehir arka plan resmi
+    final String? cityImage =
+        cityImages[widget.city]; // City background picture
 
     return Scaffold(
       appBar: AppBar(
@@ -120,9 +121,9 @@ class _CityDetailPageState extends State<CityDetailPage> {
         decoration: BoxDecoration(
           image: DecorationImage(
             image: cityImage != null
-                ? AssetImage(cityImage) // Şehir resmi varsa göster
+                ? AssetImage(cityImage) // If you have a city picture, show it
                 : const AssetImage(
-                    'assets/images/default.jpg'), // Varsayılan resim
+                    'assets/images/default.jpg'), // default picture
             fit: BoxFit.cover,
           ),
         ),
@@ -141,7 +142,7 @@ class _CityDetailPageState extends State<CityDetailPage> {
                 ),
               ),
               const SizedBox(height: 20),
-              // Arama çubuğu
+              // the search bar
               TextField(
                 controller: searchController,
                 decoration: InputDecoration(
@@ -177,15 +178,16 @@ class _CityDetailPageState extends State<CityDetailPage> {
               ),
 
               const SizedBox(height: 20),
-              // Şehir geçmişi başlığı
+              // City history title
               const Text(
                 "Şehir geçmişi:",
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 10),
-              // Şehir geçmişi listesi
+              // List of city history
               Expanded(
-                child: cityHistory.isEmpty
+                child: cityHistory
+                        .isEmpty // If you have never searched for a city, this bar will be empty
                     ? const Text("Henüz bir şehir aratmadın.")
                     : ListView.builder(
                         itemCount: cityHistory.length,
@@ -210,7 +212,7 @@ class _CityDetailPageState extends State<CityDetailPage> {
                       ),
               ),
               const SizedBox(height: 20),
-              // Eğer arama çubuğu boş değilse şehirler listesi
+              // If the search bar is not empty, the list of cities
               if (searchController.text.isNotEmpty)
                 const Text(
                   "Şehirler:",
