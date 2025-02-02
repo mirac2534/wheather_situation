@@ -25,16 +25,19 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    // Bildirim çubuğunu gizle
     SystemChrome.setEnabledSystemUIMode(
-        SystemUiMode.immersiveSticky); // Bildirim çubuğunu gizle
-    _setRandomCityImage(); // Rastgele şehir fotoğrafını ayarla
+        SystemUiMode.immersiveSticky); 
+    // Rastgele şehir fotoğrafını ayarla
+    _setRandomCityImage(); 
     _startClock();
     _initialWheatherData();
   }
 
   void _setRandomCityImage() {
     final random = Random();
-    final cityKeys = cityImages.keys.toList(); // Şehirlerin anahtarlarını al
+    // Şehirlerin anahtarlarını al
+    final cityKeys = cityImages.keys.toList(); 
     final randomCity = cityKeys[random.nextInt(cityKeys.length)];
     setState(() {
       _randomCityImage = cityImages[randomCity];
