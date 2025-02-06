@@ -1,4 +1,5 @@
 final Map<String, String> cityImages = {
+  // each city has its own photo for Türkiye
   'Adana': 'lib/models/city_image/Adana.jpeg',
   'Adıyaman': 'lib/models/city_image/Adıyaman.jpeg',
   'Afyonkarahisar': 'lib/models/city_image/Afyonkarahisar.jpeg',
