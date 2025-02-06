@@ -5,29 +5,29 @@ import 'package:hava_durumu/models/wheather_model.dart';
 
 class WheaterService {
   Future<String> getLocation() async {
-    // Kullanicinin konumu acik mi diye kontrol ettik
+    // We check to see if the user's location is clear
     final bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       Future.error("Konum kapali");
     }
-    // Kullanici konum izmi vermis mi kontrol ettik
+    // We will check whether the user has given the location permission
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
-      // Konum izni vermemisse tekrardan istedik
+      // If the location has not given permission, we will ask again
       if (permission == LocationPermission.denied) {
-        // Yine vermemisse hata dondurduk
+        // If he doesn't give it again, we'll return the error
         Future.error('Konum izni vermelisiniz');
       }
     }
-    // Kullanicinin pozisyonunu aldik
+    // We have taken the user's position
     final Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy
-            .high); // high ile kesin/net konum bilmek istedigimi belirtmis oluyorum
-    // Kullanici pozisyonundan yerlesim noktasini bulduk
+            .high); // with high, we are indicating that I want to know the exact/clear location
+    // We found the location point from the user position
     final List<Placemark> placemark =
         await placemarkFromCoordinates(position.latitude, position.longitude);
-    // Sehrimizi yerlesim noktasindan kaydettik
+    // We recorded our city from the location point
     final String? city = placemark[0].administrativeArea;
     if (city == null) Future.error('Bir sorun oluştu');
     print(city!.toString());
@@ -37,14 +37,14 @@ class WheaterService {
   Future<List<WheatherModel>> getWeatherData({String? cityName}) async {
     String city;
     if (cityName != null) {
-      // Eğer cityName parametresi dolu gelmişse onu kullan
+      // If the cityName parameter is full, use it
       city = cityName;
     } else {
-      // cityName boşsa konum bilgisinden şehri al
+      // If cityName is empty, get the city from the location information
       city = await getLocation();
     }
 
-    final String url =
+    final String url = // API that we use
         'https://api.collectapi.com/weather/getWeather?data.lang=tr&data.city=$city';
 
     const Map<String, dynamic> headers = {
