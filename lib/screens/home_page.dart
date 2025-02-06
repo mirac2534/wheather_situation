@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:math'; // Rastgele şehir seçmek için
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -25,19 +25,16 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    // Bildirim çubuğunu gizle
     SystemChrome.setEnabledSystemUIMode(
-        SystemUiMode.immersiveSticky); 
-    // Rastgele şehir fotoğrafını ayarla
-    _setRandomCityImage(); 
-    _startClock();
+        SystemUiMode.immersiveSticky); // Hide the notification bar
+    _setRandomCityImage(); // Sets random city photo
+    _startClock(); // Starts clock
     _initialWheatherData();
   }
 
   void _setRandomCityImage() {
     final random = Random();
-    // Şehirlerin anahtarlarını al
-    final cityKeys = cityImages.keys.toList(); 
+    final cityKeys = cityImages.keys.toList(); // Get the keys to the cities
     final randomCity = cityKeys[random.nextInt(cityKeys.length)];
     setState(() {
       _randomCityImage = cityImages[randomCity];
@@ -74,7 +71,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final String? cityImage = cityImages[_city]; // Şehirle eşleşen resim
+    final String? cityImage =
+        cityImages[_city]; // The picture that matches the city
 
     return Scaffold(
       body: Stack(
@@ -95,7 +93,7 @@ class _HomePageState extends State<HomePage> {
             child: Column(
               children: [
                 const SizedBox(height: 20),
-                // Şehir adı başlığı (sadece veri geldikten sonra gösterilir)
+                // City name title (shown only after the data arrives)
                 if (_city != null)
                   GestureDetector(
                     onTap: () async {
@@ -107,7 +105,7 @@ class _HomePageState extends State<HomePage> {
                       );
                       if (selectedCity != null && selectedCity.isNotEmpty) {
                         setState(() {
-                          _city = selectedCity; // Yeni seçilen şehri ayarla
+                          _city = selectedCity; // Set the newly selected city
                         });
                       }
                     },
@@ -120,7 +118,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                   ),
-                if (_city == null) const SizedBox(height: 28), // Boş yer tutucu
+                if (_city == null) const SizedBox(height: 28),
                 const SizedBox(height: 20),
                 Expanded(
                   child: ListView.builder(
@@ -128,8 +126,9 @@ class _HomePageState extends State<HomePage> {
                     itemCount: _weathers.length,
                     itemBuilder: (context, index) {
                       final weather = _weathers[index];
-
+                      // since the data that comes to us is in the string structure, we double it first
                       double newDerece = double.parse(weather.derece);
+                      // then we do the rounding step
                       int newDerece2 = newDerece.round();
                       double newMax = double.parse(weather.max);
                       int newMax2 = newMax.round();
@@ -139,7 +138,7 @@ class _HomePageState extends State<HomePage> {
                       int newGece2 = newGece.round();
                       double newNem = double.parse(weather.nem);
                       int newNem2 = newNem.round();
-
+                      // in order for the first letter of the string data that comes to us to be uppercase
                       String capitalize(String text) {
                         if (text.isEmpty) return text;
                         return text[0].toUpperCase() +
@@ -147,6 +146,7 @@ class _HomePageState extends State<HomePage> {
                       }
 
                       return Card(
+                        // card for days
                         margin: const EdgeInsets.symmetric(vertical: 10),
                         elevation: 5,
                         shape: RoundedRectangleBorder(
@@ -159,7 +159,7 @@ class _HomePageState extends State<HomePage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                weather.gun,
+                                weather.gun, // day
                                 style: const TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
@@ -180,7 +180,8 @@ class _HomePageState extends State<HomePage> {
                                   const SizedBox(width: 10),
                                   Expanded(
                                     child: Text(
-                                      capitalize(weather.durum),
+                                      capitalize(weather
+                                          .durum), // situation of the weather
                                       style: TextStyle(
                                         fontSize: 15,
                                         color: Colors.grey.shade700,
@@ -188,7 +189,7 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                   ),
                                   Text(
-                                    '${newDerece2}°C',
+                                    '${newDerece2}°C', // average degree
                                     style: TextStyle(
                                       fontSize: 15,
                                       color: Colors.grey.shade700,
@@ -202,28 +203,28 @@ class _HomePageState extends State<HomePage> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    'Max: ${newMax2}°C',
+                                    'Max: ${newMax2}°C', // max degree
                                     style: const TextStyle(
                                       fontSize: 14,
                                       color: Colors.black87,
                                     ),
                                   ),
                                   Text(
-                                    'Min: ${newMin2}°C',
+                                    'Min: ${newMin2}°C', // min degree
                                     style: const TextStyle(
                                       fontSize: 14,
                                       color: Colors.black87,
                                     ),
                                   ),
                                   Text(
-                                    'Gece: ${newGece2}°C',
+                                    'Gece: ${newGece2}°C', // degree for night
                                     style: const TextStyle(
                                       fontSize: 14,
                                       color: Colors.black87,
                                     ),
                                   ),
                                   Text(
-                                    'Nem: ${newNem2}%',
+                                    'Nem: ${newNem2}%', // humidity
                                     style: const TextStyle(
                                       fontSize: 14,
                                       color: Colors.black87,
@@ -242,6 +243,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           Positioned(
+            // clock
             top: 20,
             left: 20,
             child: Text(
