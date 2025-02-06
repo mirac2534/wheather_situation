@@ -1,7 +1,7 @@
 
 
 
-# Turkey Weather App - Project Introduction
+# Turkey Weather App 
 
   
 ### Project Introduction: Turkey Weather App  
