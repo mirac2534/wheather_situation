@@ -1,13 +1,13 @@
 class WheatherModel {
-  final String tarih;
-  final String gun;
-  final String ikon;
-  final String durum;
-  final String derece;
-  final String min;
-  final String max;
-  final String gece;
-  final String nem;
+  final String tarih; //date
+  final String gun; // day
+  final String ikon; // icon
+  final String durum; //situation
+  final String derece; //degree
+  final String min; // min degree
+  final String max; // max degree
+  final String gece; // night degree
+  final String nem; // humidity
 
   WheatherModel(
     this.tarih,
